@@ -1,4 +1,4 @@
-function createHospital(hospitalName, long, lat, hospitalAddress)
+function createHospital(hospitalName, long, lat, hospitalAddress, hospitalNumber)
 {
 	var HospitalObj = Parse.Object.extend("hospital");
 	var hospitalObj = new HospitalObj();
@@ -6,7 +6,8 @@ function createHospital(hospitalName, long, lat, hospitalAddress)
 	hospitalObj.save({
 		name: hospitalName, 
 		location: point, 
-		address: hospitalAddress}, {
+		address: hospitalAddress,
+		number: hospitalNumber}, {
 		success: function(object) {
 			console.log("Successfully created the hospital "+hospitalName);
 		},
@@ -42,24 +43,27 @@ function distanceInMiles(lat1, long1, lat2, long2)
 	return p1.milesTo(p2);
 }
 
-function addPatient(patientName, patientID, hospitalName, atHospital, isValidated)
+
+function addPatient(patientName, number, hospitalName, atHospital, isValidated, sym, ets)
 {
-	var PatientObj = Parse.Object.extend("patient");
-	var patient = new PatientObj();
-	patient.save({
-		name: patientName,
-		is_validated:isValidated,
-		hospital:hospitalName,
-		at_hospital:atHospital,
-		is_finished: false,
-		number: patientID}, {
-		success: function(object) {
-			console.log("Successfully created the patient "+patientName);
-		},
-		error: function(model, error) {
-			console.log("Failed to create the hospital "+patientName);
-		}
-	});
+    var PatientObj = Parse.Object.extend("patient");
+    var patient = new PatientObj();
+    patient.save({
+      name: patientName,
+      is_validated:isValidated,
+      hospital:hospitalName,
+      at_hospital:atHospital,
+      is_finished: false,
+      number: number,
+      symptom: sym,
+      estimate_treatment_duration: ets}, {
+      success: function(object) {
+        console.log("Successfully created the patient "+patientName);
+      },
+      error: function(model, error) {
+        console.log("Failed to create the patient "+patientName+" : "+error.message);
+      }
+    });
 }
 
 function initializeGoogleMap() {
@@ -124,7 +128,7 @@ function changePatientStatus(objectId, at_hospital, is_finished)
 	});
 }
 
-function getShortestRoute(origin,destination)
+function getShortestRoute(origin, destination, hospital)
 {
 	//var origin = new google.maps.LatLng(55.930385, -3.118425);
 	//var destination = new google.maps.LatLng(50.087692, 14.421150);
