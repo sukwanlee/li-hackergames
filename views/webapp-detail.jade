@@ -1,4 +1,22 @@
 html
 	head
+		title FastER
+		link(rel="stylesheet", href="stylesheets/webapp-detail.css")
+		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css')
+		link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet")
+		script(type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js")
+		script(type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.19.min.js")
+		script(type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6ti9X_NTFEy2taGJRQN7rv1Q_V4MSWro")
+	
 	body
-		<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=Stanford%20Hospital&key=AIzaSyD6ti9X_NTFEy2taGJRQN7rv1Q_V4MSWro"></iframe>
+		#topbar 
+			img(src="images/logo.jpg" height="50")
+		#hospital-info
+			h1 El Camino Hospital
+			h4 400 Hamilton Addres Stuff Here
+		<iframe id="map" width="600" height="450" frameborder="0" style="border:0;" align="middle" src="https://www.google.com/maps/embed/v1/place?q=El%20Camino%20Hospital&key=AIzaSyD6ti9X_NTFEy2taGJRQN7rv1Q_V4MSWro"></iframe>
+		#information-snippets
+			<h1>Driving ETA: 60 mins</h1><i class="fa fa-clock-o fa-2x"></i>
+		#buttons
+			#call Call
+			#queue Queue
