@@ -8,6 +8,11 @@ body {
 	background-color: #E4EBF0;
 }
 
+a {
+	text-decoration: none;
+	color: #6D7A86;
+}
+
 #nav {
 	width: 100%;
 	background-color: #354663;
@@ -64,6 +69,13 @@ body {
 	}
 }
 
+.patient-table-1 {
+	width: 1380px;
+	tr {
+		width: 1380px;
+	}
+}
+
 table {
 	border-collapse: collapse;
 	.table-labels {
@@ -73,6 +85,13 @@ table {
 
 .check {
 	width: 80px;
+}
+
+.fa-check {
+	color: #dedede;
+	&:hover {
+		color: grey;
+	}
 }
 
 .name {
@@ -90,6 +109,20 @@ table {
 	padding-bottom: 10px
 }
 
+.symptoms {
+	width: 250px;
+	padding-bottom: 10px;
+}
+
+.duration {
+	width: 250px;
+	padding-bottom: 10px;
+}
+
+.duration-content {
+	text-align: center;
+}
+
 .patient {
 	border-bottom: 1px solid #dedede;
 
@@ -97,4 +130,38 @@ table {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
+}
+
+.modalDialog {
+	position: fixed;
+	font-family: Arial, Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+
+.modalDialog:target {
+	opacity:1;
+	pointer-events: auto;
+}
+
+.modalDialog > div {
+	width: 400px;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+}
+
+.close {
+	padding-right: 25px;
 }
