@@ -4,7 +4,8 @@ html
 		link(rel="stylesheet", href="stylesheets/dashboard.css")
 		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css')
 		link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet")
-		script(type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+		script(type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js")
+		script(type="text/javascript" src="javascripts/jquery.uniform.js")
 		script(type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.19.min.js")
 		script(type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6ti9X_NTFEy2taGJRQN7rv1Q_V4MSWro")
 
@@ -30,13 +31,36 @@ html
 					}
 				});
 
+				$("add").live('click', function() {
+					$("input").uniform();
+				});
+
+				$("#submit").live('click', function() {
+					var name = $("#form-name").val();
+					var phone = $("#form-phone").val();
+					var symptoms = $("#form-symptom").val();
+					var duration = parseInt($("#form-time").val());
+
+					$("#form-name").val("");
+					$("#form-phone").val("");
+					$("#form-symptom").val("");
+					$("#form-time").val("");
+
+					if(name == null || phone == null) {
+						//- 
+					} else {
+						addPatient(name, phone, "Stanford Hospital", true, true, symptoms, duration);
+						getWaitingAtHospital("Stanford Hospital", patientsAtHospital);
+					}
+				});
+
 				var patientsAtHospital = [];
 				var patientsSignedUp = [];
 
-				getWaitingAtHospital("Greencastle Hospital", patientsAtHospital);
-				getSignedUp("Greencastle Hospital", patientsSignedUp);
-				//- setInterval(function(){getWaitingAtHospital("Greencastle Hospital", patientsAtHospital); console.log("updated")}, 2000);
-				setInterval(function(){getSignedUp("Greencastle Hospital", patientsSignedUp); console.log("updated")}, 2000);
+				getWaitingAtHospital("Stanford Hospital", patientsAtHospital);
+				getSignedUp("Stanford Hospital", patientsSignedUp);
+				//- setInterval(function(){getWaitingAtHospital("Stanford Hospital", patientsAtHospital); console.log("updated")}, 2000);
+				setInterval(function(){getSignedUp("Stanford Hospital", patientsSignedUp); console.log("updated")}, 2000);
 			});
 
 			function getWaitingAtHospital(hospitalName, patients)
@@ -108,6 +132,28 @@ html
 					}
 				});
 			}
+
+			function addPatient(patientName, number, hospitalName, atHospital, isValidated, sym, ets)
+			{
+					var PatientObj = Parse.Object.extend("patient");
+					var patient = new PatientObj();
+					patient.save({
+						name: patientName,
+						is_validated:isValidated,
+						hospital:hospitalName,
+						at_hospital:atHospital,
+						is_finished: false,
+						number: number,
+						symptom: sym,
+						estimate_treatment_duration: ets}, {
+						success: function(object) {
+							console.log("Successfully created the patient "+patientName);
+						},
+						error: function(model, error) {
+							console.log("Failed to create the patient "+patientName+" : "+error.message);
+						}
+					});
+			}
 	body
 		#nav
 			#logo 
@@ -118,7 +164,7 @@ html
 			h1 PATIENT DASHBOARD
 
 		#arrived.patient-list
-			h2 ARRIVED <a href="#openModal">+</a>
+			h2 ARRIVED <a id="add" href="#openModal">+</a>
 			table.patient-table-1
 				tr.table-labels
 					td.check
@@ -145,8 +191,8 @@ html
 					| Name: <input type="text" id="form-name"><br>
 					| Phone: <input type="text" id="form-phone"><br>
 					| Symptoms: <input type="text" id="form-symptom"><br>
-					| Wait time: <input type="text" id="form-time"><br>
-				a.close#submit Submit
+					| Duration: <input type="text" id="form-time"><br>
+				a.close#submit(href="#") Submit
 				a.close(href="#close" title="Close") Cancel
 
 
