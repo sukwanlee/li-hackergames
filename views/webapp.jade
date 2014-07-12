@@ -13,6 +13,18 @@ html
 			$(document).ready(function() {
 				Parse.initialize("uhsJkbSTYXcb1VuXx3nlmUdfgY5ykgr2FZ5wAXmr", "SG1zzPmObauuOPvqybARBjqbMjeYjKzJmkYerxbz");
 				getHospitals();
+
+				$(".big-link").live('click', function() {
+					var hospitalName = $(this).children()[0].children[0].textContent;
+					var hospitalAddress = $(this).children()[0].children[1].children[3].textContent + " " + $(this).children()[0].children[1].children[4].textContent;
+					var hospitalPhone = $(this).children()[0].children[1].children[5].textContent;
+					var drivingTime = $(this).children()[0].children[1].children[1].textContent;
+					
+					sessionStorage.setItem('hospitalName', hospitalName);
+					sessionStorage.setItem('hospitalAddress', hospitalAddress);
+					sessionStorage.setItem('hospitalPhone', hospitalPhone);
+					sessionStorage.setItem('drivingTime', drivingTime);
+				});
 			});
 
 			function getHospitals()
@@ -25,7 +37,7 @@ html
 						//TODO: update the UI
 							for (var i = 0; i < results.length; i++) { 
 								var object = results[i];
-								var newRow = "<a class='big-link' style='display: block;' href='#" + object.get('name') + "'><div class='hospital'><h1>" + object.get('name') + "</h1><span id='hospital-right'><i class='fa fa-car fa-2x'></i><h5 class='hidden' id='address-1'>" + object.get('address1') + "</h5><h5 class='hidden' id='address-2'>" + object.get('address2') + "</h5><h5 class='hidden id='number'>" + object.get('number') + "</h5>";
+								var newRow = "<a class='big-link' style='display: block;' href='/detail'" + object.get('name') + "'><div class='hospital'><h1>" + object.get('name') + "</h1><span id='hospital-right'><i class='fa fa-car fa-2x'></i><h5 class='hidden' id='address-1'>" + object.get('address1') + "</h5><h5 class='hidden' id='address-2'>" + object.get('address2') + "</h5><h5 class='hidden id='number'>" + object.get('number') + "</h5>";
 								$('body').append(newRow);
 
 								var location = object.attributes.location;
@@ -85,7 +97,7 @@ html
 						}
 						console.log(minDurationText);
 						console.log(minDistanceText);
-						$('.hospital:eq(' + rowIndex + ') > span').prepend("<h1>" + minDistanceText + "</h1>");
+						$('.hospital:eq(' + rowIndex + ') > span').prepend("<h1>" + minDistanceText + "</h1><h5 class='hidden'>"+ minDurationText +"</h5>");
 						getEstimatedTime(hospital, rowIndex);
 					}
 				}
@@ -118,7 +130,7 @@ html
 		#topbar 
 			img(src="images/logo.jpg" height="50")
 			#topbar-right 
-				#call Call 911
+				#call <h2>Call 911</h2>
 		//- .hospital
 			h1 Sequoia Hospital
 			span#hospital-right <h1>14.0 km</h1><i class="fa fa-car fa-2x"></i><h1>3</h1><i class="fa fa-users fa-2x"></i>

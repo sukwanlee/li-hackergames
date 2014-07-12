@@ -14,4 +14,9 @@ router.get('/detail', function(req, res) {
 	res.render('webapp-detail');
 });
 
+router.post('/hospitalInfo', function(req, res) {
+	console.log(req);
+	res.render('webapp-detail', {hospital: hospital});
+});
+
 module.exports = router;
