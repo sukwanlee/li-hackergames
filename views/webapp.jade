@@ -1,0 +1,128 @@
+html
+	head
+		title FastER
+		link(rel="stylesheet", href="stylesheets/webapp.css")
+		link(rel="stylesheet", href="stylesheets/toggle-button.css")
+		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css')
+		link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet")
+		script(type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js")
+		script(type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.19.min.js")
+		script(type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6ti9X_NTFEy2taGJRQN7rv1Q_V4MSWro")
+
+		script(type="text/javascript").
+			$(document).ready(function() {
+				Parse.initialize("uhsJkbSTYXcb1VuXx3nlmUdfgY5ykgr2FZ5wAXmr", "SG1zzPmObauuOPvqybARBjqbMjeYjKzJmkYerxbz");
+				getHospitals();
+			});
+
+			function getHospitals()
+			{
+				var hospital = Parse.Object.extend("hospital");
+				var query = new Parse.Query(hospital);
+				query.find({
+					success: function(results) {
+						console.log("Successfully retrieved " + results.length + " hospitals");
+						//TODO: update the UI
+							for (var i = 0; i < results.length; i++) { 
+								var object = results[i];
+								var newRow = "<a class='big-link' style='display: block;' href='#" + object.get('name') + "'><div class='hospital'><h1>" + object.get('name') + "</h1><span id='hospital-right'><i class='fa fa-car fa-2x'></i><h5 class='hidden' id='address-1'>" + object.get('address1') + "</h5><h5 class='hidden' id='address-2'>" + object.get('address2') + "</h5><h5 class='hidden id='number'>" + object.get('number') + "</h5>";
+								$('body').append(newRow);
+
+								var location = object.attributes.location;
+								var origin = new google.maps.LatLng(37.4221, 122.0844);
+								var destination = new google.maps.LatLng(location.latitude, location.longitude);
+								getShortestRoute(origin, destination, object.get('name'), i);
+							}
+					},
+					error: function(error) {
+						console.log("Failed to retrieve hospitals");
+					}
+				});
+			}
+
+			function initializeGoogleMap() {
+				var mapOptions = {
+					center: new google.maps.LatLng(-34.397, 150.644),
+					zoom: 8
+				};
+				var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+			}
+
+			function getShortestRoute(origin, destination, hospital, rowIndex)
+			{
+				//- var origin = new google.maps.LatLng(55.930385, -3.118425);
+				//- var destination = new google.maps.LatLng(50.087692, 14.421150);
+				var service = new google.maps.DistanceMatrixService();
+				service.getDistanceMatrix(
+					{
+						origins: [origin],
+						destinations: [destination],
+						travelMode: google.maps.TravelMode.DRIVING,
+						durationInTraffic: true
+					}, googleMapDistanceCallback);
+
+				function googleMapDistanceCallback(response, status) {
+					if (status == google.maps.DistanceMatrixStatus.OK) {
+						var origins = response.originAddresses;
+						var destinations = response.destinationAddresses;
+						//Get the route that takes the shortest time
+						var minDistance = Number.MAX_VALUE;
+						var minDuration = Number.MAX_VALUE;
+						var minDistanceText;
+						var minDurationText;
+						for (var i = 0; i < origins.length; i++) {
+							var results = response.rows[i].elements;
+							for (var j = 0; j < results.length; j++) {
+								var element = results[j];
+								if(element.duration.value < minDuration)
+								{
+									minDistance = element.distance.value;
+									minDuration = element.distance.value;
+									minDurationText = element.duration.text;
+									minDistanceText = element.distance.text;
+								}
+							}
+						}
+						console.log(minDurationText);
+						console.log(minDistanceText);
+						$('.hospital:eq(' + rowIndex + ') > span').prepend("<h1>" + minDistanceText + "</h1>");
+						getEstimatedTime(hospital, rowIndex);
+					}
+				}
+			}
+
+			function getEstimatedTime(hospitalName, rowIndex)
+			{
+				var PatientObj = Parse.Object.extend("patient");
+				var query = new Parse.Query(PatientObj);
+				query.equalTo("is_validated", true); 
+				query.equalTo("is_finished", false);
+				query.equalTo("hospital", hospitalName);
+							query.find({
+					success: function(results) {
+						var sum = 0;
+						for(var i = 0; i< results.length;i++)
+						{
+							sum += results[i].attributes.estimate_treatment_duration;
+						}
+						$('.hospital:eq(' + rowIndex + ') > span').append("<h1>" + sum + " min.</h1><i class='fa fa-clock-o fa-2x'></i>");
+						$('.hospital:eq(' + rowIndex + ')').append("</span></div><hr>");
+					},
+					error: function(error) {
+						console.log("Failed to count num waiting at hospital "+hospitalName);
+					}
+				});
+			}
+
+	body
+		#topbar 
+			h1 LOGO
+			aside#topbar-right <h2>Sort By</h2> <aside>Driving Time</aside> <input type="checkbox" name="toggle" id="toggle"><label for="toggle" style="display: inline; margin-right: 60px; margin-bottom: 10px;"></label> <aside style="margin-right: 60px;">People Waiting</aside>
+		//- .hospital
+			h1 Sequoia Hospital
+			span#hospital-right <h1>14.0 km</h1><i class="fa fa-car fa-2x"></i><h1>3</h1><i class="fa fa-users fa-2x"></i>
+		//- hr
+
+		<div id="map-canvas"/>			
+		script(type="text/javascript").
+			initializeGoogleMap();

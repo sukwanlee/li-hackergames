@@ -168,3 +168,25 @@ function getShortestRoute(origin, destination, hospital)
 		}
 	}
 }
+
+function getEstimatedTime(hospitalName)
+{
+  var PatientObj = Parse.Object.extend("patient");
+  var query = new Parse.Query(PatientObj);
+  query.equalTo("is_validated", true); 
+  query.equalTo("is_finished", false);
+  query.equalTo("hospital", hospitalName);
+        query.find({
+    success: function(results) {
+      var sum = 0;
+      for(var i = 0; i< results.length;i++)
+      {
+        sum += results[i].attributes.estimate_treatment_duration;
+      }
+      console.log(sum);
+    },
+    error: function(error) {
+      console.log("Failed to count num waiting at hospital "+hospitalName);
+    }
+  });
+}
