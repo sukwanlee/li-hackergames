@@ -1,0 +1,44 @@
+html
+	head
+		title FastER Dashboard
+		link(rel="stylesheet", href="stylesheets/dashboard.css")
+		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css')
+		link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet")
+		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js")
+	body
+		#nav
+			#logo 
+				aside LOGO
+			#hospital-name <i class="fa fa-hospital-o fa-2x"></i> Hospital Name
+
+		#title 
+			h1 PATIENT DASHBOARD
+
+		#arrived.patient-list
+			h2 ARRIVED
+			table.patient-table
+				tr.table-labels
+					td.check
+					td.name <b>NAME</b>
+					td.phone <b>PHONE</b>
+					td.health-num <b>HEALTH CARE #</b>
+				tr.patient
+					td <i class="fa fa-check"></i>
+					td Sukwan Lee
+					td 1234567890
+					td 12klj1908l
+
+
+		#ontheway.patient-list
+			h2 ON THE WAY
+			table.patient-table
+				tr.table-labels
+					td.check
+					td.name <b>NAME</b>
+					td.phone <b>PHONE</b>
+					td.health-num <b>HEALTH CARE #</b>
+				tr.patient
+					td <i class="fa fa-check"></i>
+					td Sukwan Lee
+					td 1234567890
+					td 12klj1908l
