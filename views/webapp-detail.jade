@@ -18,18 +18,21 @@ html
 				$("#hospital-info > h1").text(hospitalName);
 				$("#hospital-info > h4").text(hospitalAddress);
 				$("#information-snippets > h1").append(drivingTime);
+
+				var mapAddress = hospitalAddress.replace(/ /g, '%20');
+				$("#map").attr("src", "https://www.google.com/maps/embed/v1/place?q=" + mapAddress + "&key=AIzaSyD6ti9X_NTFEy2taGJRQN7rv1Q_V4MSWro")
 			});
 
 	body
 		#topbar 
 			a(href="/")
-				img(src="images/logo.jpg" height="50")
+				img(src="images/logo.jpg" height="120")
 		#hospital-info
 			h1 
 			h4 
-		<iframe id="map" width="600" height="450" frameborder="0" style="border:0;" align="middle" src="https://www.google.com/maps/embed/v1/place?q=El%20Camino%20Hospital&key=AIzaSyD6ti9X_NTFEy2taGJRQN7rv1Q_V4MSWro"></iframe>
+		<iframe id="map" width="600" height="450" frameborder="0" style="border:0;" align="middle" src=""></iframe>
 		#information-snippets
-			<h1>Driving ETA: </h1><i class="fa fa-clock-o fa-2x"></i>
+			<h1>Driving ETA: </h1><i class="fa fa-clock-o fa-4x"></i>
 		#buttons
 			#call Call
 			#queue Queue
